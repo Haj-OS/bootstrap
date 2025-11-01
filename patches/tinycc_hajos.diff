@@ -1,0 +1,27 @@
+diff --git a/configure b/configure
+index e7735a4e..d71d88e3 100755
+--- a/configure
++++ b/configure
+@@ -582,7 +582,7 @@ print_mak CONFIG_TCC_LIBPATHS "$tcc_libpaths"
+ print_mak CONFIG_TCC_CRTPREFIX "$tcc_crtprefix"
+ print_mak CONFIG_TCC_ELFINTERP "$tcc_elfinterp"
+ print_mak CONFIG_TCC_SWITCHES "$tcc_switches"
+-print_mak CONFIG_LDDIR "$tcc_lddir"
++print_mak CONFIG_LDDIR "lib"
+ print_mak CONFIG_TRIPLET "$triplet"
+ print_mak TCC_CPU_VERSION "$cpuver" num
+ 
+diff --git a/tcc.c b/tcc.c
+index 263beba9..192d09c0 100644
+--- a/tcc.c
++++ b/tcc.c
+@@ -358,6 +358,9 @@ redo:
+             --n;
+     }
+ 
++    s->static_link = 1;
++    s1->static_link = 1;
++
+     /* compile or add each files or library */
+     first_file = NULL;
+     do {
