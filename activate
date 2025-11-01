@@ -10,7 +10,7 @@ if ! [ -d rootfs ]; then
     exit 1
 fi
 
-ROOTFS=$(pwd)/rootfs
+export ROOTFS=$(pwd)/rootfs
 
 OLD_PROMPT="$PS1"
 OLD_PATH="$PATH"
@@ -23,7 +23,7 @@ deactivate() {
     unset -f pushd popd deactivate err
 }
 
-PS1="(haj) $OLD_PROMPT"
+PS1="(hajenv) $OLD_PROMPT"
 PATH="$ROOTFS/usr/bin:$ROOTFS/usr/sbin:/usr/bin:/usr/sbin"
 
 pushd rootfs

@@ -1,21 +1,54 @@
 diff --git a/configure b/configure
-index e7735a4e..d71d88e3 100755
+index 8ce0781..e1300b8 100755
 --- a/configure
 +++ b/configure
-@@ -582,7 +582,7 @@ print_mak CONFIG_TCC_LIBPATHS "$tcc_libpaths"
- print_mak CONFIG_TCC_CRTPREFIX "$tcc_crtprefix"
- print_mak CONFIG_TCC_ELFINTERP "$tcc_elfinterp"
- print_mak CONFIG_TCC_SWITCHES "$tcc_switches"
--print_mak CONFIG_LDDIR "$tcc_lddir"
-+print_mak CONFIG_LDDIR "lib"
- print_mak CONFIG_TRIPLET "$triplet"
- print_mak TCC_CPU_VERSION "$cpuver" num
+@@ -707,7 +707,7 @@ print_str CONFIG_TCC_LIBPATHS "$tcc_libpaths"
+ print_str CONFIG_TCC_CRTPREFIX "$tcc_crtprefix"
+ print_str CONFIG_TCC_ELFINTERP "$tcc_elfinterp"
+ print_str CONFIG_TCC_SWITCHES "$tcc_switches"
+-print_str CONFIG_LDDIR "$tcc_lddir"
++print_str CONFIG_LDDIR "lib"
+ print_str CONFIG_TRIPLET "$triplet"
+ print_str CONFIG_OS_RELEASE "$os_release"
+ echo "#endif" >> $TMPH && echo >> $TMPH
+diff --git a/lib/Makefile b/lib/Makefile
+index 29b339a..ff66e27 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -50,7 +50,7 @@ Nat = $(if $X,no,)
+ Cbt = $(Nat)$(subst yes,,$(CONFIG_backtrace))
+ Cbc = $(Cbt)$(subst yes,,$(CONFIG_bcheck))
  
+-$(Nat)COMMON_O += runmain.o tcov.o
++$(Nat)COMMON_O += runmain.o
+ $(Cbt)COMMON_O += bt-exe.o bt-log.o
+ $(Cbt)WIN_O += bt-dll.o
+ $(Cbc)COMMON_O += bcheck.o
+diff --git a/libtcc.c b/libtcc.c
+index 8809e61..424f64a 100644
+--- a/libtcc.c
++++ b/libtcc.c
+@@ -1706,7 +1706,6 @@ static const FlagDef options_f[] = {
+     { offsetof(TCCState, leading_underscore), 0, "leading-underscore" },
+     { offsetof(TCCState, ms_extensions), 0, "ms-extensions" },
+     { offsetof(TCCState, dollars_in_identifiers), 0, "dollars-in-identifiers" },
+-    { offsetof(TCCState, test_coverage), 0, "test-coverage" },
+     { offsetof(TCCState, reverse_funcargs), 0, "reverse-funcargs" },
+     { offsetof(TCCState, gnu89_inline), 0, "gnu89-inline" },
+     { offsetof(TCCState, unwind_tables), 0, "asynchronous-unwind-tables" },
 diff --git a/tcc.c b/tcc.c
-index 263beba9..192d09c0 100644
+index e181923..4ad4b75 100644
 --- a/tcc.c
 +++ b/tcc.c
-@@ -358,6 +358,9 @@ redo:
+@@ -125,7 +125,6 @@ static const char help2[] =
+     "  reverse-funcargs              evaluate function arguments right to left\n"
+     "  gnu89-inline                  'extern inline' is like 'static inline'\n"
+     "  asynchronous-unwind-tables    create eh_frame section [on]\n"
+-    "  test-coverage                 create code coverage code\n"
+     "-m... target specific options:\n"
+     "  ms-bitfields                  use MSVC bitfield layout\n"
+ #ifdef TCC_TARGET_ARM
+@@ -367,6 +366,9 @@ redo:
              --n;
      }
  
